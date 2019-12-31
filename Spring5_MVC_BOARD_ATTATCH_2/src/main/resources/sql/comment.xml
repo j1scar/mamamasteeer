@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd" > 
+                
+<mapper namespace="Comments">
+
+ <select id="count" resultType="int" parameterType="int">
+   select count(*) from comments
+   where BOARD_RE_REF = #{BOARD_RE_REF}
+ </select>
+ 
+ <select id="list" resultType="C" parameterType="int">
+   select * from comments
+   where BOARD_RE_REF = #{BOARD_RE_REF}
+ </select>
+ 
+ <insert id="insert" parameterType="C">
+    insert into comments
+    values(com_seq.nextval,#{id},#{content},sysdate,#{BOARD_RE_REF})
+ </insert>
+
+ <delete id="delete" parameterType="int">
+   delete comments where num = #{num}
+ </delete>
+
+ <update id="update" parameterType="C">
+   update comments set content = #{content}
+   where num = #{num}
+ </update>
+</mapper>

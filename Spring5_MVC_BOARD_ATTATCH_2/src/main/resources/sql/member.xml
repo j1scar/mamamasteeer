@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd" > 
+                
+<mapper namespace="Members">
+
+ <select id="idcheck" resultType="member" parameterType="String">
+    select * from member where id = #{id}
+ </select>
+ 
+ <insert id="insert" parameterType="member">
+    insert into member 
+    values(#{id}, #{password}, #{name}, #{age}, #{gender}, #{email})
+ </insert>
+ 
+ <select id="getSearchList" parameterType="map" resultType="member">
+    
+     select * from (select rownum rnum, b.* 
+              from (select * from member 
+                    where id != 'admin' 
+                    <if test="search_field != null">
+                    and
+                    <choose>
+                     <when test="search_field=='id'">id</when>
+                     <when test="search_field=='name'">name</when>
+                     <when test="search_field=='age'">age</when>
+                     <when test="search_field=='gender'">gender</when>
+                    </choose>
+                    like #{search_word}
+                    </if>
+                    order by id) b
+                    )
+                    where rnum &gt;= #{start} and rnum &lt;= #{end}  
+    
+ </select>
+ 
+ <select id="searchcount" parameterType="map" resultType="int">
+       select count(*) from member where id != 'admin' 
+       <if test="search_field != null">
+       and
+       <choose>
+        <when test="search_field=='id'">id</when>
+        <when test="search_field=='name'">name</when>
+        <when test="search_field=='age'">age</when>
+        <when test="search_field=='gender'">gender</when>
+       </choose>
+        like #{search_word}
+       </if>
+ </select>
+ 
+ <select id="memberinfo" resultType="member" parameterType="String">
+    select * from member where id = #{id}
+ </select>
+ 
+  <delete id="delete" parameterType="member">
+    delete from member where id = #{id}
+ </delete>
+ 
+  <update id="update" parameterType="member">
+     update member
+     set password = #{password},
+         name = #{name},
+         age = #{age},
+         gender = #{gender},
+         email = #{email}
+     where id = #{id}
+  </update>
+</mapper>
